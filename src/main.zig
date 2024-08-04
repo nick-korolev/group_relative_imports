@@ -18,7 +18,9 @@ pub fn main() !void {
             .ok => {},
         }
     }
+
     const allocator = gpa.allocator();
+
     var arena = std.heap.ArenaAllocator.init(allocator);
     defer arena.deinit();
     const arena_allocator = arena.allocator();
