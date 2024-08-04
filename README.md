@@ -1,4 +1,4 @@
-# Zig Group Relative Imports
+# Zig Replace Absolute Imports
 
 ## Description
 
