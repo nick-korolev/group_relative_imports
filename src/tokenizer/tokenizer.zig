@@ -2,8 +2,8 @@ const std = @import("std");
 
 const fs = std.fs;
 
-pub fn generate_tokens(allocator: std.mem.Allocator, dest: []const u8) !std.ArrayList([]u8) {
-    const file = try fs.cwd().openFile(dest, .{});
+pub fn generate_tokens(allocator: std.mem.Allocator, file_path: []const u8) !std.ArrayList([]u8) {
+    const file = try fs.cwd().openFile(file_path, .{});
     defer file.close();
 
     const file_size = try file.getEndPos();
@@ -48,6 +48,9 @@ pub fn generate_tokens(allocator: std.mem.Allocator, dest: []const u8) !std.Arra
             }
         }
         start = token_stop_index;
+        if (token_start_index > buffer.len or token_stop_index > buffer.len) {
+            continue;
+        }
         try tokens.append(buffer[token_start_index..token_stop_index]);
     }
     return tokens;
