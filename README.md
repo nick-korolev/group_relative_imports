@@ -35,8 +35,8 @@ To install Zig, follow the instructions on the [official website](https://ziglan
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/zig-group-relative-imports.git
-   cd zig-group-relative-imports
+   git clone https://github.com/nick-korolev/replace_absolute_imports.git
+   cd replace_absolute_imports
    ```
 
 2. Build the project:
@@ -46,7 +46,7 @@ To install Zig, follow the instructions on the [official website](https://ziglan
 
 3. Run the script:
    ```sh
-   ./zig-out/bin/relative-imports <path_to_your_project>
+   ./zig-out/bin/replace_absolute_imports <path_to_your_project>
    ```
 
 ### Step-by-Step Process:
