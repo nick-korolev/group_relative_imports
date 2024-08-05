@@ -1,5 +1,5 @@
 const std = @import("std");
-const tokenizer = @import("./tokenizer/tokenizer.zig");
+const import_replacer = @import("./import_replacer/import_replacer.zig");
 
 pub fn main() !void {
     const start_time = std.time.milliTimestamp();
@@ -25,7 +25,7 @@ pub fn main() !void {
     defer arena.deinit();
     const arena_allocator = arena.allocator();
 
-    const tokens = try tokenizer.generate_tokens(arena_allocator, "./data/TestComponent/index.tsx", "@app", "./data");
+    const tokens = try import_replacer.replace_imports(arena_allocator, "./data/TestComponent/index.tsx", "@app", "./data");
     defer tokens.deinit();
 
     for (tokens.items) |token| {

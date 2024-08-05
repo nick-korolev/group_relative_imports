@@ -2,7 +2,7 @@ const std = @import("std");
 
 const fs = std.fs;
 
-pub fn generate_tokens(allocator: std.mem.Allocator, file_path: []const u8, prefix: []const u8, relative_dir: []const u8) !std.ArrayList([]u8) {
+pub fn replace_imports(allocator: std.mem.Allocator, file_path: []const u8, prefix: []const u8, relative_dir: []const u8) !std.ArrayList([]u8) {
     const dir_path = std.fs.path.dirname(file_path);
 
     const file = try fs.cwd().openFile(file_path, .{});
