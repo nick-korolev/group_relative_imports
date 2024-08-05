@@ -25,7 +25,7 @@ pub fn main() !void {
     defer arena.deinit();
     const arena_allocator = arena.allocator();
 
-    const tokens = try tokenizer.generate_tokens(arena_allocator, "./data/TestComponent/index.tsx");
+    const tokens = try tokenizer.generate_tokens(arena_allocator, "./data/TestComponent/index.tsx", "@app", "./data");
     defer tokens.deinit();
 
     for (tokens.items) |token| {

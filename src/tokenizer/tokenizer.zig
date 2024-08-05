@@ -2,7 +2,9 @@ const std = @import("std");
 
 const fs = std.fs;
 
-pub fn generate_tokens(allocator: std.mem.Allocator, file_path: []const u8) !std.ArrayList([]u8) {
+pub fn generate_tokens(allocator: std.mem.Allocator, file_path: []const u8, prefix: []const u8, relative_dir: []const u8) !std.ArrayList([]u8) {
+    const dir_path = std.fs.path.dirname(file_path);
+
     const file = try fs.cwd().openFile(file_path, .{});
     defer file.close();
 
@@ -42,8 +44,6 @@ pub fn generate_tokens(allocator: std.mem.Allocator, file_path: []const u8) !std
                         stop_initialized = true;
                     }
                 },
-                '0'...'9', 'A'...'Z', 'a'...'z' => left += 1,
-                ' ', '\t', '\n', '\r' => left += 1,
                 else => left += 1,
             }
         }
@@ -51,7 +51,14 @@ pub fn generate_tokens(allocator: std.mem.Allocator, file_path: []const u8) !std
         if (token_start_index > buffer.len or token_stop_index > buffer.len) {
             continue;
         }
-        try tokens.append(buffer[token_start_index..token_stop_index]);
+        const target = buffer[token_start_index..token_stop_index];
+
+        if (dir_path) |path| {
+            const computed_path = try std.mem.replaceOwned(u8, allocator, path, relative_dir, prefix);
+            if (std.mem.startsWith(u8, target, computed_path)) {
+                try tokens.append(target);
+            }
+        }
     }
     return tokens;
 }
