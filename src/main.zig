@@ -25,10 +25,5 @@ pub fn main() !void {
     defer arena.deinit();
     const arena_allocator = arena.allocator();
 
-    const tokens = try import_replacer.replace_imports(arena_allocator, "./data/TestComponent/index.tsx", "@app", "./data");
-    defer tokens.deinit();
-
-    for (tokens.items) |token| {
-        std.debug.print("token: {s}\n", .{token});
-    }
+    try import_replacer.replace_imports(arena_allocator, "/Users/nick_korolev/Documents/work/StennAppWeb/apps/fcg/src/pages/AddCompanyInformationPage/index.tsx", "@app", "/Users/nick_korolev/Documents/work/StennAppWeb/apps/fcg/src");
 }
