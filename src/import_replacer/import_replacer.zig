@@ -56,8 +56,10 @@ pub fn replace_imports(allocator: std.mem.Allocator, file_path: []const u8, pref
 
         // duplicate
         if (dir_path) |path| {
-            const computed_path = try std.mem.replaceOwned(u8, allocator, path, relative_dir, prefix);
+            const replaced = try std.mem.replaceOwned(u8, allocator, path, relative_dir, prefix);
+            const computed_path = try std.fmt.allocPrint(allocator, "{s}/", .{replaced});
 
+            // std.debug.print("computed_path: {s}\n", .{computed_path});
             if (std.mem.startsWith(u8, target, computed_path)) {
                 try tokens.append(target);
             }
@@ -74,7 +76,7 @@ pub fn replace_imports(allocator: std.mem.Allocator, file_path: []const u8, pref
     }
 
     if (tokens.items.len != 0) {
-        std.debug.print("buffer: {s} \n", .{buffer});
+        // std.debug.print("buffer: {s} \n", .{buffer});
         try file.seekTo(0);
         try file.writeAll(buffer);
         try file.setEndPos(buffer.len);
