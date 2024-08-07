@@ -1,5 +1,6 @@
 const std = @import("std");
 const import_replacer = @import("./import_replacer/import_replacer.zig");
+const directory_reader = @import("./directory_reader/directory_reader.zig");
 
 pub fn main() !void {
     const start_time = std.time.milliTimestamp();
@@ -8,6 +9,7 @@ pub fn main() !void {
 
         const duration = end_time - start_time;
         std.debug.print("Done: {} ms\n", .{duration});
+        std.debug.print("=================================================\n", .{});
     }
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer {
@@ -25,5 +27,14 @@ pub fn main() !void {
     defer arena.deinit();
     const arena_allocator = arena.allocator();
 
-    try import_replacer.replace_imports(arena_allocator, "/Users/nick_korolev/Documents/work/StennAppWeb/apps/fcg/src/pages/AddCompanyInformationPage/index.tsx", "@app", "/Users/nick_korolev/Documents/work/StennAppWeb/apps/fcg/src");
+    const base_path = "/Users/nick_korolev/Documents/work/StennAppWeb/apps/fcg/src";
+
+    const files = try directory_reader.read_directory(arena_allocator, base_path);
+    defer files.deinit();
+
+    for (files.items) |file_path| {
+        try import_replacer.replace_imports(arena_allocator, file_path, "@app", base_path);
+    }
+    std.debug.print("=================================================\n", .{});
+    std.debug.print("Checked {} files\n", .{files.items.len});
 }
