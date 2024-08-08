@@ -1,6 +1,7 @@
 const std = @import("std");
 const import_replacer = @import("./import_replacer/import_replacer.zig");
 const directory_reader = @import("./directory_reader/directory_reader.zig");
+const args_reader = @import("./args_reader/args_reader.zig");
 
 pub fn main() !void {
     const start_time = std.time.milliTimestamp();
@@ -27,13 +28,20 @@ pub fn main() !void {
     defer arena.deinit();
     const arena_allocator = arena.allocator();
 
-    const base_path = "/Users/nick_korolev/Documents/work/StennAppWeb/apps/fcg/src";
+    const args = try args_reader.read_args(allocator);
 
-    const files = try directory_reader.read_directory(arena_allocator, base_path);
+    defer {
+        allocator.free(args.path);
+        allocator.free(args.prefix);
+    }
+
+    std.debug.print("path: {s}, prefix: {s}\n", .{ args.path, args.prefix });
+
+    const files = try directory_reader.read_directory(arena_allocator, args.path);
     defer files.deinit();
 
     for (files.items) |file_path| {
-        try import_replacer.replace_imports(arena_allocator, file_path, "@app", base_path);
+        try import_replacer.replace_imports(arena_allocator, file_path, args.prefix, args.path);
     }
     std.debug.print("=================================================\n", .{});
     std.debug.print("Checked {} files\n", .{files.items.len});
